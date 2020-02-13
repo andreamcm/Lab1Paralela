@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <math.h>
 #include <omp.h>
+#include <time.h>
 
 double f(double x);    /* Function we're integrating */
 void Trap(double a, double b, int n, double* global_result_p);
@@ -12,16 +13,24 @@ int main(int argc, char* argv[]) {
    int     n;                    /* Total number of trapezoids    */
    int     thread_count;
 
+   clock_t start, end;           /*       Time Varaibles          */
+   double cpu_time_used;
+
    thread_count = strtol(argv[1], NULL, 10);
    printf("Enter a, b, and n\n");
    scanf("%lf %lf %d", &a, &b, &n);
+   start = clock();
 
 #  pragma omp parallel num_threads(thread_count) 
    Trap(a, b, n, &global_result);
 
+   end = clock();
+   cpu_time_used = ((double) (end - start)) / CLOCKS_PER_SEC;
+
    printf("With n = %d trapezoids, our estimate\n", n);
    printf("of the integral from %f to %f = %.14e\n",
       a, b, global_result);
+   printf("Time taken: %lf \n", cpu_time_used);
    return 0;
 }  /* main */
 

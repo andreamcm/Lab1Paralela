@@ -70,7 +70,7 @@ double Local_trap(double a, double b, int n) {
    int thread_count = omp_get_num_threads();
 
    h = (b-a)/n;
-   local_n = n/thread_count;
+   local_n = ceil(n/thread_count);
    local_a = a + my_rank*local_n*h;
    local_b = local_a + local_n*h;
    my_result = (f(local_a) + f(local_b))/2.0;
